@@ -1,0 +1,8 @@
+{
+  "query": "book publishers in Edinburgh, UK",
+  "location": "Edinburgh, UK",
+  "maxResults": 600,
+  "outputFile": "book_publishers_Edinburgh_UK.xlsx",
+  "delayBetweenRequests": 1000,
+  "emailConcurrency": 3
+}
