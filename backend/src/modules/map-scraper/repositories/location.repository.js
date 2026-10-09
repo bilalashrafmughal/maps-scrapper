@@ -101,7 +101,11 @@ async function removeByCampaign(campaignId) {
 }
 
 /** Error fragments that mean "retryable" (transient network failures). */
-const RETRYABLE_ERROR_PATTERNS = ["timeout", "ERR_NAME_NOT_RESOLVED"];
+const RETRYABLE_ERROR_PATTERNS = [
+  "Timeout",
+  "ERR_NAME_NOT_RESOLVED",
+  "Executable doesn't exist",
+];
 
 /**
  * Resets retryable failed locations back to `pending`.
@@ -117,10 +121,7 @@ async function resetRetryableFailures(campaignId) {
   const clauses = RETRYABLE_ERROR_PATTERNS.map(() => "error_msg LIKE ?").join(
     " OR ",
   );
-  const params = [
-    campaignId,
-    ...RETRYABLE_ERROR_PATTERNS.map((p) => `%${p}%`),
-  ];
+  const params = [campaignId, ...RETRYABLE_ERROR_PATTERNS.map((p) => `%${p}%`)];
 
   const [result] = await getPool().execute(
     `UPDATE campaign_locations
