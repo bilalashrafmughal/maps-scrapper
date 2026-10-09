@@ -3,7 +3,6 @@
 const ExcelJS = require("exceljs");
 const path = require("path");
 const fs = require("fs");
-
 // ── Column definitions ────────────────────────────────────────────────────────
 const COLUMNS = [
   { header: "Name", key: "name", width: 32 },
@@ -22,18 +21,13 @@ const ALT_ROW_BG = "FFDCE6F1"; // Light blue alternating row
 const BORDER_CLR = "FFD3D3D3"; // Light grey cell border
 
 /**
- * Writes an array of business objects to a formatted Excel (.xlsx) file.
+ * Builds a formatted Excel workbook from business rows.
  *
  * @param {object[]} businesses
- * @param {string}   outputFile   Filename (not path) — saved inside ./output/
+ * @param {string}  [outputFile]  When provided, also writes to ./output/<file>.
+ * @returns {Promise<Buffer>} the .xlsx bytes, ready to stream as a response.
  */
 async function exportToExcel(businesses, outputFile) {
-  const outputDir = path.resolve(process.cwd(), "output");
-  if (!fs.existsSync(outputDir)) {
-    fs.mkdirSync(outputDir, { recursive: true });
-  }
-  const filePath = path.join(outputDir, outputFile);
-
   // ── Workbook setup ────────────────────────────────────────────────────────
   const workbook = new ExcelJS.Workbook();
   workbook.creator = "Google Maps Scraper";
@@ -110,9 +104,19 @@ async function exportToExcel(businesses, outputFile) {
   };
 
   // ── Save ──────────────────────────────────────────────────────────────────
-  await workbook.xlsx.writeFile(filePath);
-  console.log(`\nSaved: ${filePath}`);
-  console.log(`Rows:  ${businesses.length}`);
+  const buffer = await workbook.xlsx.writeBuffer();
+
+  // Optional disk copy (useful for CLI-style usage).
+  if (outputFile) {
+    const outputDir = path.resolve(process.cwd(), "output");
+    if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
+    const filePath = path.join(outputDir, outputFile);
+    await workbook.xlsx.writeFile(filePath);
+    console.log(`\nSaved: ${filePath}`);
+    console.log(`Rows:  ${businesses.length}`);
+  }
+
+  return buffer;
 }
 
 /** Applies a uniform thin grey border to every cell in a row. */

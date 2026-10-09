@@ -6,13 +6,18 @@
   "scripts": {
     "start": "node src/index.js",
     "debug": "node --inspect-brk src/index.js",
-    "setup": "npx playwright install chromium"
+    "setup": "npx playwright install chromium",
+    "postinstall": "node scripts/build-email-scraper.js"
   },
   "dependencies": {
     "cors": "^2.8.6",
+    "email-scraper": "github:web-scraping-tools/email-scraper",
     "exceljs": "^4.4.0",
     "express": "^5.2.1",
     "mysql2": "^3.22.5",
     "playwright": "^1.44.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3"
   }
 }
