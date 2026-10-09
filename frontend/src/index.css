@@ -1,3 +1,10 @@
+/*
+ * Tailwind v4 is loaded for utilities + theme only.
+ * Preflight is intentionally omitted so it does not conflict with MUI's CssBaseline.
+ */
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
 /* Minimal global reset — MUI's CssBaseline handles most */
 *,
 *::before,

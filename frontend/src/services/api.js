@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8080/api";
+const API_BASE =
+  import.meta.env.VITE_API_URL || "http://localhost:8080/api/map-scraper";
 
 const api = axios.create({
   baseURL: API_BASE,
@@ -31,3 +32,12 @@ export const getCampaignLocations = (id) =>
 
 export const createCampaign = (payload) =>
   api.post("/campaigns", payload).then((r) => r.data);
+
+export const updateCampaign = (id, payload) =>
+  api.put(`/campaigns/${id}`, payload).then((r) => r.data);
+
+export const updateCampaignStatus = (id, status) =>
+  api.patch(`/campaigns/${id}/status`, { status }).then((r) => r.data);
+
+export const retryFailedLocations = (id) =>
+  api.post(`/campaigns/${id}/retry-failed`).then((r) => r.data);
